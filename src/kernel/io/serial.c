@@ -56,12 +56,40 @@ void write_serial_hex(unsigned long num) {
     }
 }
 
+void write_serial_int(long num) {
+
+    if (num == 0) {
+        write_serial_char('0');
+        return;
+    }
+
+    if (num < 0) {
+        write_serial_char('-');
+        num = -num;
+    }
+
+    char buff[20];
+    size_t i = 0;
+
+    while (num > 0) {
+        buff[i++] = (num % 10) + '0';
+        num /= 10;
+    }
+
+    while (i > 0) {
+        write_serial_char(buff[--i]);
+    }
+}
+
 void va_write_serial(const char* format, va_list args) {
 
     for (size_t i = 0; format[i] != '\0'; i++) {
         if (format[i] == '%' && format[i+1] != '\0') {
             i++;
             switch (format[i]) {
+                case 'd':
+                    write_serial_int(va_arg(args, int));
+                    break;
                 case 'x':
                     write_serial_hex(va_arg(args, unsigned int));
                     break;
