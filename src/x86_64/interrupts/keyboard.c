@@ -19,6 +19,10 @@ char scancode_to_ascii(uint8_t scancode) {
 void keyboard_handler(struct InterruptStackFrame *frame) {
     uint8_t scan_code = inportb(0x60);
 
+    if (scan_code & 0x80) {
+        return;
+    }
+
     kprintf("Scancode: %d\n", scan_code);
 
     char key = scancode_to_ascii(scan_code);
