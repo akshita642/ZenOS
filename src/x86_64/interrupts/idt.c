@@ -11,19 +11,14 @@
 struct idt_entry idt[IDT_ENTRIES];
 struct idt_ptr idtp;
 
-void (*irq_routines[16])(struct InterruptData *, struct InterruptStackFrame *) = {
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-};
-void (*exception_handlers[32])(struct InterruptData *, struct InterruptStackFrame *) = {
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-};
+void (*irq_routines[16])(struct InterruptStackFrame *) = {};
+void (*exception_handlers[32])(struct InterruptStackFrame *) = {};
 
-void irq_set_routine(uint8_t irq_number, void (*routine)(struct InterruptData *, struct InterruptStackFrame *)) {
+void irq_set_routine(uint8_t irq_number, void (*routine)(struct InterruptStackFrame *)) {
 	irq_routines[irq_number] = routine;
 }
 
-void exception_set_handler(uint8_t exception_number, void (*handler)(struct InterruptData *, struct InterruptStackFrame *)) {
+void exception_set_handler(uint8_t exception_number, void (*handler)(struct InterruptStackFrame *)) {
     exception_handlers[exception_number] = handler;
 }
 
@@ -36,30 +31,30 @@ void pic_acknowledge(uint8_t irq) {
 }
 
 __attribute__((noreturn))
-void handle_exception(struct InterruptData *data, struct InterruptStackFrame *frame) {
+void handle_exception(struct InterruptStackFrame *frame) {
 
-	error("Exception %d: %s\n", data->interrupt_num, EXCEPTIONS[data->interrupt_num]);
-    error("code %d\n", data->error_code);
+	error("Exception %d: %s\n", frame->interrupt_num, EXCEPTIONS[frame->interrupt_num]);
+    error("code %d\n", frame->error_code);
 
     error("Interrupt frame at %x \n", (unsigned long)frame);
-    error("Instruction pointer: %x \n", frame->instruction_pointer);
-    error("Code segment: %x \n", frame->code_segment);
-    error("CPU flags: %x \n", frame->cpu_flags);
-    error("Stack pointer: %x \n", frame->stack_pointer);
-    error("Stack segment: %x \n", frame->stack_segment);
+    error("Instruction pointer: %x \n", frame->rip);
+    error("Code segment: %x \n", frame->cs);
+    error("CPU flags: %x \n", frame->rflags);
+    error("Stack pointer: %x \n", frame->rsp);
+    error("Stack segment: %x \n", frame->ss);
 
-	void (*handler)(struct InterruptData *, struct InterruptStackFrame *) = exception_handlers[data->interrupt_num];
+	void (*handler)(struct InterruptStackFrame *) = exception_handlers[frame->interrupt_num];
 	if (handler)
-		handler(data, frame);
+		handler(frame);
 	asm("cli; hlt");
 	while (1);
 }
 
-void handle_interrupt(struct InterruptData *data, struct InterruptStackFrame *frame) {
-    uint32_t irq_number = data->interrupt_num - 32;
-    void (*routine)(struct InterruptData*, struct InterruptStackFrame *) = irq_routines[irq_number];
+void handle_interrupt(struct InterruptStackFrame *frame) {
+    uint32_t irq_number = frame->interrupt_num - 32;
+    void (*routine)(struct InterruptStackFrame*) = irq_routines[irq_number];
     if (routine)
-        routine(data, frame);
+        routine(frame);
     pic_acknowledge(irq_number);
 }
 

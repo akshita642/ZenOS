@@ -17,15 +17,7 @@ struct idt_ptr {
     uint32_t base;
 } __attribute__((packed));
 
-struct InterruptStackFrame {
-    uint64_t instruction_pointer;
-    uint64_t code_segment;
-    uint64_t cpu_flags;
-    uint64_t stack_pointer;
-    uint64_t stack_segment;
-} __attribute__((packed));
-
-struct __attribute__((packed)) InterruptData {
+struct __attribute__((packed)) InterruptStackFrame {
 	uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rbp, rdi, rsi, rdx, rcx, rbx, rax;
 	uint64_t interrupt_num, error_code;
 	uint64_t rip, cs, rflags, rsp, ss;

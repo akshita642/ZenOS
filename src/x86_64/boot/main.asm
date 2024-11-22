@@ -6,7 +6,6 @@ bits 32
 start:
     mov esp, stack_top
 
-    mov dword [mboot_saved_info.mboot_eax], eax
     mov dword [mboot_saved_info.mboot_ebx], ebx
 
     call check_multiboot
@@ -132,10 +131,8 @@ stack_top:
 section .bss
 align 16
 mboot_saved_info:
-    .mboot_eax: resd 1
     .mboot_ebx: resd 1
 
-global mboot_saved_info.mboot_eax
 global mboot_saved_info.mboot_ebx
 
 PRESENT        equ 1 << 7
@@ -167,9 +164,15 @@ gdt64:
         db PRESENT | NOT_SYS | RW                   ; Access
         db GRAN_4K | SZ_32 | 0xF                    ; Flags & Limit (high, bits 16-19)
         db 0                                        ; Base (high, bits 24-31)
-    .TSS: equ $ - gdt64
-        dd 0x00000068
-        dd 0x00CF8900
+    .Tss:
+        dw 0 ; limit
+        dw 0 ; base
+        db 0 ; base
+        db 0 ; access
+        db 0 ; flags and limit
+        db 0 ; base
+        dd 0 ; base
+        dd 0 ; reserved
     .Pointer:
         dw $ - gdt64 - 1
         dq gdt64

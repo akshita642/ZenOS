@@ -17,6 +17,6 @@ void pic_remap() {
 }
 
 void enable_irq() {
-    outportb(PIC1_DATA, 0xFD); // Enable IRQ0
+    outportb(PIC1_DATA, 0xFD); // Enable IRQ1
     outportb(PIC2_DATA, 0xFF); // Disable all IRQs on the slave
 }

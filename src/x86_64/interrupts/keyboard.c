@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "kernel/io.h"
 #include "interrupts/pic.h"
+#include "interrupts/idt.h"
 #include "print.h"
 
 char scancode_to_ascii(uint8_t scancode) {
@@ -15,9 +16,7 @@ char scancode_to_ascii(uint8_t scancode) {
     return 0;
 }
 
-void keyboard_handler() {
-    outportb(PIC1_COMMAND, 0x20);
-
+void keyboard_handler(struct InterruptStackFrame *frame) {
     uint8_t scan_code = inportb(0x60);
 
     kprintf("Scancode: %d\n", scan_code);

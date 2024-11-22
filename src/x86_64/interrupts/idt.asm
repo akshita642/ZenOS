@@ -117,7 +117,6 @@ irq_stub 15
 
 exception_handler:
 	pushregs
-    mov rsi, rdi
 	mov rdi, rsp
 	call handle_exception
 	popregs
@@ -126,7 +125,6 @@ exception_handler:
 
 irq_handler:
 	pushregs
-    mov rsi, rdi
 	mov rdi, rsp
 	call handle_interrupt
 	popregs
