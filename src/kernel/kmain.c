@@ -2,6 +2,7 @@
 #include "drivers/serial.h"
 #include "kernel/kprintf.h"
 #include "arch/x86_64/interrupt/gdt.h"
+#include "arch/x86_64/interrupt/idt.h"
 
 void kmain() {    
 
@@ -13,6 +14,7 @@ void kmain() {
     vga_clear_screen();
 
     init_gdt_with_tss();
+    init_idt();
 
     kprintf(INFO, "Welcome to ZenOS\n");
 }

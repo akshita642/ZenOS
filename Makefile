@@ -18,7 +18,7 @@ LD := ld
 GRUB_MKRESCUE := grub-mkrescue
 
 ASMFLAGS := -f elf64 -I $(ASM_DIR)
-CFLAGS := -O3 -Iinclude -m64 -nostdlib -nostdinc -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs -Wall -Wextra -Werror -mno-red-zone
+CFLAGS := -O3 -Iinclude -m64 -nostdlib -nostdinc -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs -Wall -Wextra -Werror -mno-red-zone -mgeneral-regs-only
 LDFLAGS := -T targets/x86_64/linker.ld -melf_x86_64
 
 ASM_SRC := $(shell find $(ASM_DIR) $(COMMON_ARCH_DIR) -name '*.asm')

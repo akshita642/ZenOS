@@ -13,7 +13,9 @@ long_mode_start:
 
     call kmain
 
+halt:
     hlt
+    jmp halt
 
 extern lgdt
 lgdt:
@@ -24,6 +26,21 @@ extern ltr
 ltr:
     mov di, gdt64.Tss
     ltr di
+    ret
+
+extern lidt
+lidt:
+    lidt [rdi]
+    ret
+
+extern cli
+cli:
+    cli
+    ret
+
+extern sti
+sti:
+    sti
     ret
 
 section .text
@@ -140,7 +157,7 @@ gdt64:
 
 KERNEL_STACK_SIZE equ 4096
 
-section .bss
 align 8
+section .bss
 kernel_stack:
     resb KERNEL_STACK_SIZE

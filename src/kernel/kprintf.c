@@ -8,7 +8,7 @@ void kputchar(char ch) {
 }
 
 #define GET_ARG(type, reg_index, stack_pointer)                \
-    ((reg_index < 5) ? ((type)(reg_args[reg_index++])) :       \
+    ((reg_index < 4) ? ((type)(reg_args[reg_index++])) :       \
                        ((type)(*stack_pointer++)))
 
 void kprintf(enum LogLevel level, const char* format, ...) {
@@ -22,11 +22,10 @@ void kprintf(enum LogLevel level, const char* format, ...) {
 
     uintptr_t reg_args[5];
     asm volatile (
-        "mov %%rsi, %0\n\t"
-        "mov %%rdx, %1\n\t"
-        "mov %%rcx, %2\n\t"
-        "mov %%r8,  %3\n\t"
-        "mov %%r9,  %4\n\t"
+        "mov %%rdx, %0\n\t"
+        "mov %%rcx, %1\n\t"
+        "mov %%r8,  %2\n\t"
+        "mov %%r9,  %3\n\t"
         : "=m"(reg_args[0]), "=m"(reg_args[1]), "=m"(reg_args[2]),
           "=m"(reg_args[3]), "=m"(reg_args[4])
     );
