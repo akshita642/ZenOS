@@ -26,5 +26,6 @@ void vga_set_color(uint8_t foreground, uint8_t background);
 void vga_write_char(char character);
 
 void vga_set_cursor(int x, int y);
+void vga_update_cursor();
 void vga_enable_cursor(uint8_t cursor_start, uint8_t cursor_end);
 void vga_disable_cursor();

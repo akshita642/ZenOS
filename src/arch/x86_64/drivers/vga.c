@@ -36,6 +36,7 @@ void vga_clear_screen() {
         clear_row(i);
     }
     vga_set_cursor(0, 0);
+    vga_update_cursor();
 }
 
 void vga_set_color(uint8_t foreground, uint8_t background) {
@@ -59,14 +60,39 @@ void print_newline() {
 
     clear_row(NUM_COLS - 1);
 
-    vga_set_cursor(col, row);
+    vga_update_cursor();
+}
+
+void backspace() {
+    if (col == 0) {
+        if (row != 0) {
+            col = NUM_COLS - 1;
+            row = row - 1;
+        }
+    } else {
+        col = col - 1;
+    }
+
+    struct Char empty = (struct Char) {
+        .character = ' ',
+        .color = color,
+    };
+
+    buffer[col + NUM_COLS * row] = empty;
 }
 
 void vga_write_char(char character) {
     if (character == '\n') {
         print_newline();
+        vga_update_cursor();
         return;
     } 
+
+    if (character == '\b') {
+        backspace();
+        vga_update_cursor();
+        return;
+    }
 
     if (col > NUM_COLS - 1) {
         print_newline();
@@ -80,15 +106,16 @@ void vga_write_char(char character) {
 
     col++;
 
-    vga_set_cursor(col, row);
+    vga_update_cursor();
 }
 
 void vga_set_cursor(int x, int y) {
-
     row = y;
     col = x;
+}
 
-    uint16_t position = y * NUM_COLS + x;
+void vga_update_cursor() {
+    uint16_t position = row * NUM_COLS + col;
 
     out(FB_COMMAND_PORT, FB_HIGH_BYTE_COMMAND);
     out(FB_DATA_PORT, (position >> 8) & 0xFF);
