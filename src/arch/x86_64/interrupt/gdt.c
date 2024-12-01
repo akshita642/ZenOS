@@ -1,4 +1,5 @@
 #include "arch/x86_64/interrupt/gdt.h"
+#include "arch/x86_64/asm.h"
 #include "kernel/kprintf.h"
 #include "drivers/vga.h"
 

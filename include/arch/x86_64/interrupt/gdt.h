@@ -165,9 +165,6 @@ struct TSS_Segment {
     uint16_t iomap_base_address;
 } __attribute__((packed));
 
-extern void lgdt();
-extern void ltr();
-
 void init_gdt_with_tss();
 void set_gdt_entry8(struct GDT_Entry8* entry, uint32_t base_address, uint16_t size, uint8_t flags, uint8_t access);
 void set_gdt_entry16(struct GDT_Entry16* entry, uint64_t base_address, uint32_t size, uint8_t access, uint8_t flags);

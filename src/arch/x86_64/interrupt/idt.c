@@ -1,6 +1,7 @@
 #include "arch/x86_64/interrupt/idt.h"
 #include "arch/x86_64/interrupt/isr.h"
 #include "arch/x86_64/interrupt/pic.h"
+#include "arch/x86_64/asm.h"
 #include "kernel/kprintf.h"
 #include "drivers/keyboard.h"
 

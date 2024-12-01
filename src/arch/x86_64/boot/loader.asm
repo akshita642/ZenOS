@@ -13,9 +13,9 @@ long_mode_start:
 
     call kmain
 
-halt:
+.halt:
     hlt
-    jmp halt
+    jmp .halt
 
 extern lgdt
 lgdt:

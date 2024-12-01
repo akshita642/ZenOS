@@ -65,9 +65,5 @@ struct IDT_Ptr {
     uint64_t offset;
 } __attribute__((packed));
 
-extern void cli();
-extern void sti();
-extern void lidt(uint64_t idtp);
-
 void init_idt();
 void set_idt_entry(struct IDT_Entry* entry, uint64_t handler, uint16_t selector, uint8_t ist, uint8_t flags, uint8_t gate_type);
